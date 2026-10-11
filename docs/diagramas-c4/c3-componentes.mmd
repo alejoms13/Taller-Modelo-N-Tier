@@ -1,27 +1,28 @@
 flowchart TB
+
     subgraph P["CAPA DE PRESENTACIÓN"]
         direction LR
-        Server["Server<br/>Rutas HTTP y API"]
-        HU["HttpUtil<br/>Lectura de solicitudes<br/>y respuestas JSON"]
+        Server["Server<br/>Servidor HTTP y rutas API<br/>Sirve archivos estáticos"]
+        HU["HttpUtil<br/>Lee cuerpos de solicitudes<br/>Construye respuestas JSON"]
         Server --> HU
     end
 
-    subgraph N["CAPA DE NEGOCIO"]
+    subgraph N["CAPA DE NEGOCIO / APLICACIÓN"]
         direction LR
-        PS["ProductoService"]
-        CS["ClienteService"]
-        OS["PedidoService<br/>Crear pedidos<br/>Cambiar estados"]
-        FS["FidelidadService"]
-        IS["InventarioService"]
+        PS["ProductoService<br/>Lista productos"]
+        CS["ClienteService<br/>Lista y registra clientes"]
+        OS["PedidoService<br/>Crea pedidos<br/>Valida pedidos pendientes<br/>Gestiona estados"]
+        FS["FidelidadService<br/>Descuentos Junior / Mid / Senior<br/>DevPoints y ascensos de nivel"]
+        IS["InventarioService<br/>Valida cantidades y stock<br/>Descuenta existencias"]
     end
 
-    subgraph D["CAPA DE PERSISTENCIA"]
+    subgraph D["CAPA DE PERSISTENCIA / DATOS"]
         direction LR
-        PDA["JsonProductoDAO"]
-        CDA["JsonClienteDAO"]
-        ODA["JsonPedidoDAO"]
-        DB["JsonDatabase"]
-        MJ["MiniJson"]
+        PDA["JsonProductoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
+        CDA["JsonClienteDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
+        ODA["JsonPedidoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
+        DB["JsonDatabase<br/>Lectura y escritura de archivos<br/>Conversión de registros y objetos<br/>Inicialización de datos"]
+        MJ["MiniJson<br/>Parseo y serialización JSON"]
     end
 
     Server --> PS
