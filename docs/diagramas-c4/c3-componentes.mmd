@@ -3,24 +3,24 @@ flowchart TB
 
     subgraph P["CAPA DE PRESENTACIÓN"]
         direction LR
-        Server["Server<br/>Servidor HTTP · API<br/>Archivos estáticos"]
-        HU["HttpUtil<br/>Lee solicitudes<br/>Respuestas JSON"]
+        Server["Server<br/>Servidor HTTP y rutas API<br/>Sirve archivos web"]
+        HU["HttpUtil<br/>Lee solicitudes<br/>Genera respuestas JSON"]
         Server --> HU
     end
 
     subgraph N["CAPA DE NEGOCIO / APLICACIÓN"]
         direction TB
 
-        subgraph N1["SERVICIOS PRINCIPALES"]
+        subgraph NS["SERVICIOS PRINCIPALES"]
             direction LR
-            PS["ProductoService<br/>Lista productos"]
-            CS["ClienteService<br/>Lista y registra clientes"]
-            OS["PedidoService<br/>Crea pedidos<br/>Valida pendientes<br/>Gestiona estados"]
+            PS["ProductoService<br/>Consulta productos"]
+            CS["ClienteService<br/>Consulta y registra clientes"]
+            OS["PedidoService<br/>Crea pedidos<br/>Valida reglas y estados"]
         end
 
-        subgraph N2["SERVICIOS DE APOYO"]
+        subgraph NA["SERVICIOS DE APOYO"]
             direction LR
-            FS["FidelidadService<br/>Descuentos por nivel<br/>DevPoints y ascensos"]
+            FS["FidelidadService<br/>Descuentos y DevPoints<br/>Actualiza nivel del cliente"]
             IS["InventarioService<br/>Valida stock<br/>Descuenta existencias"]
         end
 
@@ -31,19 +31,30 @@ flowchart TB
     subgraph D["CAPA DE PERSISTENCIA / DATOS"]
         direction TB
 
-        subgraph D1["DAO: ACCESO A DATOS"]
+        subgraph I["INTERFACES DAO · CONTRATOS"]
             direction LR
-            PDA["JsonProductoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
-            CDA["JsonClienteDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
-            ODA["JsonPedidoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
+            PI[["ProductoDAO"]]
+            CI[["ClienteDAO"]]
+            OI[["PedidoDAO"]]
         end
 
-        DB["JsonDatabase<br/>Lee y escribe archivos<br/>Convierte objetos y registros"]
+        subgraph J["IMPLEMENTACIONES JSON"]
+            direction LR
+            JP["JsonProductoDAO"]
+            JC["JsonClienteDAO"]
+            JO["JsonPedidoDAO"]
+        end
+
+        DB["JsonDatabase<br/>Lee y escribe archivos JSON<br/>Convierte registros y objetos"]
         MJ["MiniJson<br/>Parsea y serializa JSON"]
 
-        PDA --> DB
-        CDA --> DB
-        ODA --> DB
+        PI -. "implementado por" .-> JP
+        CI -. "implementado por" .-> JC
+        OI -. "implementado por" .-> JO
+
+        JP --> DB
+        JC --> DB
+        JO --> DB
         DB --> MJ
     end
 
@@ -51,8 +62,9 @@ flowchart TB
     Server --> CS
     Server --> OS
 
-    PS --> PDA
-    CS --> CDA
-    OS --> PDA
-    OS --> CDA
-    OS --> ODA
+    PS --> PI
+    CS --> CI
+
+    OS --> PI
+    OS --> CI
+    OS --> OI
