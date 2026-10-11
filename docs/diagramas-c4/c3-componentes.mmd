@@ -1,26 +1,40 @@
-flowchart TB
-    Server["Server<br/>Servidor HTTP y rutas API"]
-    PS["ProductoService"]
-    CS["ClienteService"]
-    OS["PedidoService"]
-    FS["FidelidadService"]
-    IS["InventarioService"]
-    PDA["JsonProductoDAO"]
-    CDA["JsonClienteDAO"]
-    ODA["JsonPedidoDAO"]
-    DB["JsonDatabase"]
-    JSON["MiniJson"]
+flowchart LR
+    subgraph Presentacion["CAPA DE PRESENTACIÓN"]
+        Server["Server<br/>Servidor HTTP y rutas API"]
+        HU["HttpUtil<br/>Lectura de solicitudes<br/>y respuestas HTTP/JSON"]
+    end
+
+    subgraph Negocio["CAPA DE NEGOCIO"]
+        PS["ProductoService<br/>Gestión de productos"]
+        CS["ClienteService<br/>Gestión de clientes"]
+        OS["PedidoService<br/>Creación y estados de pedidos"]
+        FS["FidelidadService<br/>Reglas de DevPoints y niveles"]
+        IS["InventarioService<br/>Validación de stock"]
+    end
+
+    subgraph Persistencia["CAPA DE PERSISTENCIA"]
+        PDA["JsonProductoDAO"]
+        CDA["JsonClienteDAO"]
+        ODA["JsonPedidoDAO"]
+        DB["JsonDatabase<br/>Gestión de archivos"]
+        MJ["MiniJson<br/>Serialización y deserialización"]
+    end
+
+    Server --> HU
     Server --> PS
     Server --> CS
     Server --> OS
-    OS --> PS
-    OS --> CS
-    OS --> FS
-    OS --> IS
+
     PS --> PDA
     CS --> CDA
+
+    OS --> PDA
+    OS --> CDA
     OS --> ODA
+    OS --> FS
+    OS --> IS
+
     PDA --> DB
     CDA --> DB
     ODA --> DB
-    DB --> JSON
+    DB --> MJ
