@@ -1,26 +1,26 @@
 
 flowchart TB
 
-    subgraph P["CAPA DE PRESENTACIÓN"]
+    subgraph P["1. PRESENTACIÓN"]
         direction LR
-        Server["Server<br/>Servidor HTTP y rutas API<br/>Sirve archivos web"]
-        HU["HttpUtil<br/>Lee solicitudes<br/>Genera respuestas JSON"]
-        Server --> HU
+        S["Server<br/>HTTP · API<br/>Archivos web"]
+        H["HttpUtil<br/>Lee solicitudes<br/>Respuestas JSON"]
+        S --> H
     end
 
-    subgraph N["CAPA DE NEGOCIO / APLICACIÓN"]
+    subgraph N["2. NEGOCIO / APLICACIÓN"]
         direction TB
 
-        subgraph NS["SERVICIOS PRINCIPALES"]
+        subgraph NS["SERVICIOS"]
             direction LR
             PS["ProductoService<br/>Consulta productos"]
-            CS["ClienteService<br/>Consulta y registra clientes"]
+            CS["ClienteService<br/>Gestiona clientes"]
             OS["PedidoService<br/>Crea pedidos<br/>Valida reglas y estados"]
         end
 
-        subgraph NA["SERVICIOS DE APOYO"]
+        subgraph NA["APOYO"]
             direction LR
-            FS["FidelidadService<br/>Descuentos y DevPoints<br/>Actualiza nivel del cliente"]
+            FS["FidelidadService<br/>Descuentos · DevPoints<br/>Nivel del cliente"]
             IS["InventarioService<br/>Valida stock<br/>Descuenta existencias"]
         end
 
@@ -28,29 +28,29 @@ flowchart TB
         OS --> IS
     end
 
-    subgraph D["CAPA DE PERSISTENCIA / DATOS"]
+    subgraph D["3. PERSISTENCIA / DATOS"]
         direction TB
 
-        subgraph I["INTERFACES DAO · CONTRATOS"]
+        subgraph I["INTERFACES DAO"]
             direction LR
             PI[["ProductoDAO"]]
             CI[["ClienteDAO"]]
             OI[["PedidoDAO"]]
         end
 
-        subgraph J["IMPLEMENTACIONES JSON"]
+        subgraph J["IMPLEMENTACIONES"]
             direction LR
             JP["JsonProductoDAO"]
             JC["JsonClienteDAO"]
             JO["JsonPedidoDAO"]
         end
 
-        DB["JsonDatabase<br/>Lee y escribe archivos JSON<br/>Convierte registros y objetos"]
-        MJ["MiniJson<br/>Parsea y serializa JSON"]
+        DB["JsonDatabase<br/>Archivos JSON<br/>Conversión de datos"]
+        MJ["MiniJson<br/>Parseo y serialización"]
 
-        PI -. "implementado por" .-> JP
-        CI -. "implementado por" .-> JC
-        OI -. "implementado por" .-> JO
+        PI -.-> JP
+        CI -.-> JC
+        OI -.-> JO
 
         JP --> DB
         JC --> DB
@@ -58,13 +58,12 @@ flowchart TB
         DB --> MJ
     end
 
-    Server --> PS
-    Server --> CS
-    Server --> OS
+    S --> PS
+    S --> CS
+    S --> OS
 
     PS --> PI
     CS --> CI
-
     OS --> PI
     OS --> CI
     OS --> OI
