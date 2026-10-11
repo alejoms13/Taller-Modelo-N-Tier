@@ -2,29 +2,13 @@ flowchart LR
     Cliente["PERSONA<br/>Cliente de Café Overflow"]
 
     subgraph Sistema["SISTEMA: CAFÉ OVERFLOW"]
-        direction LR
+        Browser["CONTENEDOR WEB<br/>Navegador<br/>HTML · CSS · JavaScript<br/><br/>Muestra productos y pedidos<br/>Captura las acciones del cliente"]
 
-        subgraph Frontend["CONTENEDOR WEB"]
-            Browser["Navegador web<br/>HTML · CSS · JavaScript<br/><br/>Presenta el menú<br/>Captura pedidos<br/>Muestra productos y estados"]
-        end
+        Java["CONTENEDOR DE APLICACIÓN<br/>Servidor Java · JDK HttpServer<br/><br/>Sirve archivos web<br/>Expone rutas /api/<br/>Procesa solicitudes HTTP<br/>Coordina los servicios"]
 
-        subgraph Backend["CONTENEDOR DE APLICACIÓN"]
-            Java["Servidor Java<br/>JDK HttpServer<br/><br/>Expone rutas HTTP<br/>Recibe solicitudes<br/>Devuelve respuestas JSON"]
-
-            subgraph Capas["Capas lógicas internas"]
-                Presentacion["Presentación<br/>Rutas y manejo HTTP"]
-                Negocio["Negocio / Aplicación<br/>Servicios y reglas de negocio"]
-                Persistencia["Persistencia / Datos<br/>DAO y acceso a archivos"]
-            end
-
-            Presentacion --> Negocio
-            Negocio --> Persistencia
-            Java --- Presentacion
-        end
-
-        Datos[("ARCHIVOS JSON<br/>productos.json<br/>clientes.json<br/>pedidos.json")]
-        Persistencia -->|"Lee y escribe"| Datos
+        JSON[("ALMACENAMIENTO<br/>Archivos JSON<br/>productos.json<br/>clientes.json<br/>pedidos.json")]
     end
 
-    Cliente -->|"Utiliza desde su navegador"| Browser
+    Cliente -->|"Utiliza"| Browser
     Browser <-->|"HTTP · JSON"| Java
+    Java -->|"Acceso a través de DAO y JsonDatabase"| JSON
