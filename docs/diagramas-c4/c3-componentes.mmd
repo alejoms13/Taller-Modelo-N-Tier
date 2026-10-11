@@ -1,44 +1,58 @@
+
 flowchart TB
 
     subgraph P["CAPA DE PRESENTACIÓN"]
-        direction LR
+        direction TB
         Server["Server<br/>Servidor HTTP y rutas API<br/>Sirve archivos estáticos"]
         HU["HttpUtil<br/>Lee cuerpos de solicitudes<br/>Construye respuestas JSON"]
         Server --> HU
     end
 
     subgraph N["CAPA DE NEGOCIO / APLICACIÓN"]
-        direction LR
-        PS["ProductoService<br/>Lista productos"]
-        CS["ClienteService<br/>Lista y registra clientes"]
-        OS["PedidoService<br/>Crea pedidos<br/>Valida pedidos pendientes<br/>Gestiona estados"]
-        FS["FidelidadService<br/>Descuentos Junior / Mid / Senior<br/>DevPoints y ascensos de nivel"]
-        IS["InventarioService<br/>Valida cantidades y stock<br/>Descuenta existencias"]
+        direction TB
+
+        subgraph NS["SERVICIOS PRINCIPALES"]
+            direction LR
+            PS["ProductoService<br/>Lista productos"]
+            OS["PedidoService<br/>Crea pedidos<br/>Valida pedidos pendientes<br/>Gestiona estados"]
+            CS["ClienteService<br/>Lista y registra clientes"]
+        end
+
+        subgraph NR["SERVICIOS DE APOYO"]
+            direction LR
+            IS["InventarioService<br/>Valida cantidades y stock<br/>Descuenta existencias"]
+            FS["FidelidadService<br/>Descuentos por nivel<br/>DevPoints y ascensos"]
+        end
+
+        OS --> IS
+        OS --> FS
     end
 
     subgraph D["CAPA DE PERSISTENCIA / DATOS"]
-        direction LR
-        PDA["JsonProductoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
-        CDA["JsonClienteDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
-        ODA["JsonPedidoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
-        DB["JsonDatabase<br/>Lectura y escritura de archivos<br/>Conversión de registros y objetos<br/>Inicialización de datos"]
-        MJ["MiniJson<br/>Parseo y serialización JSON"]
+        direction TB
+
+        subgraph DAOS["ACCESO A DATOS"]
+            direction LR
+            PDA["JsonProductoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
+            ODA["JsonPedidoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
+            CDA["JsonClienteDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
+        end
+
+        DB["JsonDatabase<br/>Lee y escribe archivos<br/>Convierte registros y objetos<br/>Inicializa datos"]
+        MJ["MiniJson<br/>Parsea y serializa JSON"]
+
+        PDA --> DB
+        ODA --> DB
+        CDA --> DB
+        DB --> MJ
     end
 
     Server --> PS
-    Server --> CS
     Server --> OS
+    Server --> CS
 
     PS --> PDA
-    CS --> CDA
-
     OS --> PDA
-    OS --> CDA
     OS --> ODA
-    OS --> FS
-    OS --> IS
-
-    PDA --> DB
-    CDA --> DB
-    ODA --> DB
-    DB --> MJ
+    OS --> CDA
+    CS --> CDA
