@@ -1,4 +1,4 @@
-# Diagramas C4 y UML
+# Diagramas C4 
 
 Estos diagramas se deben cerrar después de probar la implementación. Los archivos fuente Mermaid se pueden abrir en un editor compatible o convertir a imagen para el informe.
 
