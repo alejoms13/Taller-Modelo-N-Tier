@@ -2,57 +2,57 @@
 flowchart TB
 
     subgraph P["CAPA DE PRESENTACIÓN"]
-        direction TB
-        Server["Server<br/>Servidor HTTP y rutas API<br/>Sirve archivos estáticos"]
-        HU["HttpUtil<br/>Lee cuerpos de solicitudes<br/>Construye respuestas JSON"]
+        direction LR
+        Server["Server<br/>Servidor HTTP · API<br/>Archivos estáticos"]
+        HU["HttpUtil<br/>Lee solicitudes<br/>Respuestas JSON"]
         Server --> HU
     end
 
     subgraph N["CAPA DE NEGOCIO / APLICACIÓN"]
         direction TB
 
-        subgraph NS["SERVICIOS PRINCIPALES"]
+        subgraph N1["SERVICIOS PRINCIPALES"]
             direction LR
             PS["ProductoService<br/>Lista productos"]
-            OS["PedidoService<br/>Crea pedidos<br/>Valida pedidos pendientes<br/>Gestiona estados"]
             CS["ClienteService<br/>Lista y registra clientes"]
+            OS["PedidoService<br/>Crea pedidos<br/>Valida pendientes<br/>Gestiona estados"]
         end
 
-        subgraph NR["SERVICIOS DE APOYO"]
+        subgraph N2["SERVICIOS DE APOYO"]
             direction LR
-            IS["InventarioService<br/>Valida cantidades y stock<br/>Descuenta existencias"]
             FS["FidelidadService<br/>Descuentos por nivel<br/>DevPoints y ascensos"]
+            IS["InventarioService<br/>Valida stock<br/>Descuenta existencias"]
         end
 
-        OS --> IS
         OS --> FS
+        OS --> IS
     end
 
     subgraph D["CAPA DE PERSISTENCIA / DATOS"]
         direction TB
 
-        subgraph DAOS["ACCESO A DATOS"]
+        subgraph D1["DAO: ACCESO A DATOS"]
             direction LR
             PDA["JsonProductoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
-            ODA["JsonPedidoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
             CDA["JsonClienteDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
+            ODA["JsonPedidoDAO<br/>Listar · Buscar<br/>Guardar · Actualizar"]
         end
 
-        DB["JsonDatabase<br/>Lee y escribe archivos<br/>Convierte registros y objetos<br/>Inicializa datos"]
+        DB["JsonDatabase<br/>Lee y escribe archivos<br/>Convierte objetos y registros"]
         MJ["MiniJson<br/>Parsea y serializa JSON"]
 
         PDA --> DB
-        ODA --> DB
         CDA --> DB
+        ODA --> DB
         DB --> MJ
     end
 
     Server --> PS
-    Server --> OS
     Server --> CS
+    Server --> OS
 
     PS --> PDA
-    OS --> PDA
-    OS --> ODA
-    OS --> CDA
     CS --> CDA
+    OS --> PDA
+    OS --> CDA
+    OS --> ODA
