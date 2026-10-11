@@ -1,26 +1,33 @@
 flowchart LR
-    subgraph Presentacion["CAPA DE PRESENTACIÓN"]
+    subgraph P["CAPA DE PRESENTACIÓN"]
+        direction TB
         Server["Server<br/>Servidor HTTP y rutas API"]
         HU["HttpUtil<br/>Lectura de solicitudes<br/>y respuestas HTTP/JSON"]
+        Server --> HU
     end
 
-    subgraph Negocio["CAPA DE NEGOCIO"]
-        PS["ProductoService<br/>Gestión de productos"]
-        CS["ClienteService<br/>Gestión de clientes"]
-        OS["PedidoService<br/>Creación y estados de pedidos"]
-        FS["FidelidadService<br/>Reglas de DevPoints y niveles"]
-        IS["InventarioService<br/>Validación de stock"]
+    subgraph N["CAPA DE NEGOCIO"]
+        direction TB
+        PS["ProductoService"]
+        CS["ClienteService"]
+        OS["PedidoService"]
+        FS["FidelidadService"]
+        IS["InventarioService"]
     end
 
-    subgraph Persistencia["CAPA DE PERSISTENCIA"]
+    subgraph D["CAPA DE PERSISTENCIA"]
+        direction TB
         PDA["JsonProductoDAO"]
         CDA["JsonClienteDAO"]
         ODA["JsonPedidoDAO"]
-        DB["JsonDatabase<br/>Gestión de archivos"]
-        MJ["MiniJson<br/>Serialización y deserialización"]
+        DB["JsonDatabase"]
+        MJ["MiniJson"]
+        PDA --> DB
+        CDA --> DB
+        ODA --> DB
+        DB --> MJ
     end
 
-    Server --> HU
     Server --> PS
     Server --> CS
     Server --> OS
@@ -33,8 +40,3 @@ flowchart LR
     OS --> ODA
     OS --> FS
     OS --> IS
-
-    PDA --> DB
-    CDA --> DB
-    ODA --> DB
-    DB --> MJ
