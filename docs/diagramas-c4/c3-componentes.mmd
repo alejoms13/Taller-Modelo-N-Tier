@@ -1,0 +1,26 @@
+flowchart TB
+    Server["Server<br/>Servidor HTTP y rutas API"]
+    PS["ProductoService"]
+    CS["ClienteService"]
+    OS["PedidoService"]
+    FS["FidelidadService"]
+    IS["InventarioService"]
+    PDA["JsonProductoDAO"]
+    CDA["JsonClienteDAO"]
+    ODA["JsonPedidoDAO"]
+    DB["JsonDatabase"]
+    JSON["MiniJson"]
+    Server --> PS
+    Server --> CS
+    Server --> OS
+    OS --> PS
+    OS --> CS
+    OS --> FS
+    OS --> IS
+    PS --> PDA
+    CS --> CDA
+    OS --> ODA
+    PDA --> DB
+    CDA --> DB
+    ODA --> DB
+    DB --> JSON

@@ -1,0 +1,123 @@
+classDiagram
+    class Server {
+      +start() void
+      -api(exchange) void
+      -staticFile(exchange) void
+    }
+    class Producto {
+      +String id
+      +String nombre
+      +int precio
+      +int stock
+      +String descripcion
+    }
+    class Cliente {
+      +String id
+      +String nombre
+      +String correo
+      +String nivel
+      +int devPoints
+      +int comprasAcumuladas
+    }
+    class ItemPedido {
+      +String productoId
+      +String nombreProducto
+      +int cantidad
+      +int precioUnitario
+      +subtotal() int
+    }
+    class Pedido {
+      +String id
+      +String clienteId
+      +List~ItemPedido~ items
+      +String estado
+      +int subtotal
+      +int descuentoNivel
+      +int descuentoPuntos
+      +int total
+      +int puntosRedimidos
+      +int puntosGanados
+      +String fecha
+      +String modalidad
+    }
+    class ProductoService {
+      +listar() List~Producto~
+      +buscar(id) Producto
+    }
+    class ClienteService {
+      +listar() List~Cliente~
+      +buscar(id) Cliente
+      +crear(nombre, correo) Cliente
+      +actualizar(cliente) void
+    }
+    class FidelidadService {
+      +porcentajeDescuento(nivel) int
+      +descuentoNivel(subtotal, cliente) int
+      +puntosRedimibles(cliente, solicitados) int
+      +valorRedencion(puntos) int
+      +puntosGanados(totalPagado) int
+      +registrarCompraCompletada(cliente, total, puntosRedimidos) void
+    }
+    class InventarioService {
+      +validarStock(producto, cantidad) void
+      +descontar(producto, cantidad) void
+    }
+    class PedidoService {
+      +listar() List~Pedido~
+      +crear(clienteId, lineas, puntos, modalidad) Pedido
+      +cambiarEstado(id, nuevoEstado) Pedido
+    }
+    class ProductoDAO {
+      <<interface>>
+      +listar() List~Producto~
+      +buscar(id) Producto
+      +guardar(producto) void
+      +actualizar(producto) void
+    }
+    class ClienteDAO {
+      <<interface>>
+      +listar() List~Cliente~
+      +buscar(id) Cliente
+      +guardar(cliente) void
+      +actualizar(cliente) void
+    }
+    class PedidoDAO {
+      <<interface>>
+      +listar() List~Pedido~
+      +buscar(id) Pedido
+      +guardar(pedido) void
+      +actualizar(pedido) void
+    }
+    class JsonDatabase {
+      +productos() List~Producto~
+      +clientes() List~Cliente~
+      +pedidos() List~Pedido~
+      +saveProducto(producto) void
+      +saveCliente(cliente) void
+      +savePedido(pedido) void
+    }
+    class MiniJson {
+      +parse(texto) Object
+      +stringify(objeto) String
+    }
+    class JsonProductoDAO
+    class JsonClienteDAO
+    class JsonPedidoDAO
+    Pedido "1" *-- "1..*" ItemPedido
+    Server --> ProductoService
+    Server --> ClienteService
+    Server --> PedidoService
+    PedidoService --> ProductoDAO
+    PedidoService --> ClienteDAO
+    PedidoService --> PedidoDAO
+    PedidoService --> FidelidadService
+    PedidoService --> InventarioService
+    ProductoService --> ProductoDAO
+    ClienteService --> ClienteDAO
+    JsonProductoDAO ..|> ProductoDAO
+    JsonClienteDAO ..|> ClienteDAO
+    JsonPedidoDAO ..|> PedidoDAO
+    JsonProductoDAO --> JsonDatabase
+    JsonClienteDAO --> JsonDatabase
+    JsonPedidoDAO --> JsonDatabase
+    JsonDatabase --> MiniJson

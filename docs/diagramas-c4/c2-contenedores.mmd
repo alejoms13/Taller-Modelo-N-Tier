@@ -1,0 +1,8 @@
+flowchart TB
+    Cliente["Cliente"]
+    Browser["Contenedor: Navegador web<br/>HTML, CSS, JavaScript"]
+    Java["Contenedor: Aplicación web Java<br/>JDK HttpServer, lógica de presentación, negocio y persistencia"]
+    JSON[("Contenedor: Archivos JSON<br/>productos.json, clientes.json, pedidos.json")]
+    Cliente -->|"Usa"| Browser
+    Browser -->|"HTTP / JSON"| Java
+    Java -->|"Lectura y escritura de archivos locales"| JSON
