@@ -1,8 +1,12 @@
 flowchart TB
-    Cliente["Cliente"]
-    Browser["Contenedor: Navegador web<br/>HTML, CSS, JavaScript"]
-    Java["Contenedor: Aplicación web Java<br/>JDK HttpServer, lógica de presentación, negocio y persistencia"]
-    JSON[("Contenedor: Archivos JSON<br/>productos.json, clientes.json, pedidos.json")]
-    Cliente -->|"Usa"| Browser
-    Browser -->|"HTTP / JSON"| Java
-    Java -->|"Lectura y escritura de archivos locales"| JSON
+    Cliente["Persona: Cliente de Café Overflow"]
+
+    subgraph Sistema["Sistema Café Overflow"]
+        Browser["Contenedor: Navegador web<br/>HTML, CSS y JavaScript"]
+        Java["Contenedor: Servidor Java<br/>JDK HttpServer y API HTTP"]
+        JSON[("Almacenamiento: Archivos JSON<br/>productos.json, clientes.json y pedidos.json")]
+    end
+
+    Cliente -->|"Utiliza"| Browser
+    Browser -->|"Solicitudes HTTP y respuestas JSON"| Java
+    Java -->|"Lee y escribe datos"| JSON
